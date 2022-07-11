@@ -1,0 +1,25 @@
+name: desktop_webview_auth_tizen_example
+description: Demonstrates how to use the desktop_webview_auth_tizen plugin.
+
+publish_to: 'none' 
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  desktop_webview_auth_tizen:
+    path: ../
+  googleapis: ^5.0.1
+  googleapis_auth: ^1.1.0
+  desktop_webview_auth: 0.0.9
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true

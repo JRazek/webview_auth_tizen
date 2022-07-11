@@ -1,7 +1,4 @@
 import 'dart:collection';
-import 'dart:io';
-import 'package:ewk_webview_flutter_tizen/ewk_webview_flutter_tizen.dart';
-import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'auth-data.dart';

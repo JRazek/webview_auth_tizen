@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:desktop_webview_auth_tizen/desktop_webview_auth_tizen.dart';
+import 'package:desktop_webview_auth_tizen/oauth/auth-data.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/identitytoolkit/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart';
@@ -43,10 +44,20 @@ class MyApp extends StatefulWidget {
 
 class LoginState extends State<MyApp> {
   bool loginPage = false;
+
+  void loginCallback(AuthData authData) {
+    setState(() {
+      loginPage = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return loginPage
-        ? MaterialApp(
+        ? GoogleLoginPage(
+            callback: loginCallback,
+          )
+        : MaterialApp(
             theme: ThemeData(
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ButtonStyle(
@@ -124,8 +135,7 @@ class LoginState extends State<MyApp> {
                 },
               ),
             ),
-          )
-        : const GoogleLoginPage();
+          );
   }
 
   SignInCallback signInWithArgs(BuildContext context, ProviderArgs args) =>

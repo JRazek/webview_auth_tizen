@@ -26,5 +26,6 @@ flutter:
 
   plugin:
     platforms:
-      some_platform:
-        pluginClass: somePluginClass
+      tizen:
+        pluginClass: DesktopWebviewAuthTizenPlugin
+        fileName: desktop_webview_auth_tizen_plugin.h

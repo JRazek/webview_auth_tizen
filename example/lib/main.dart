@@ -42,22 +42,33 @@ class MyApp extends StatefulWidget {
   }
 }
 
+enum LoginStateE{ selector, login_page, success }
+
 class LoginState extends State<MyApp> {
-  bool loginPage = false;
+  LoginStateE state = LoginStateE.selector;
+  AuthData? authData;
+  GoogleLoginPage? loginPage;
 
   void loginCallback(AuthData authData) {
     setState(() {
-      loginPage = false;
+	  state = LoginStateE.success;
+	  this.authData = authData;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return loginPage
-        ? GoogleLoginPage(
+    return 
+		state == LoginStateE.login_page
+        ? 
+		loginPage = GoogleLoginPage(
+			clientID: '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com',
+			state: 'profile',
+			scope: 'https://www.googleapis.com/auth/userinfo.email',
             callback: loginCallback,
-          )
-        : MaterialApp(
+		)
+        : 
+		MaterialApp(
             theme: ThemeData(
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ButtonStyle(
@@ -65,20 +76,20 @@ class LoginState extends State<MyApp> {
                 ),
               ),
             ),
-            home: Scaffold(
+            home: 
+			
+			state == LoginStateE.selector ?
+
+			Scaffold(
               body: Builder(
                 builder: (context) {
                   final buttons = [
                     ElevatedButton(
-                      onPressed: signInWithArgs(
-                        context,
-                        GoogleSignInArgs(
-                          clientId: GOOGLE_CLIENT_ID,
-                          redirectUri: REDIRECT_URI,
-                          scope: 'https://www.googleapis.com/auth/plus.me '
-                              'https://www.googleapis.com/auth/userinfo.email',
-                        ),
-                      ),
+                      onPressed: (){
+						setState(() {
+						  state = LoginStateE.login_page;
+						});
+					  },
                       child: const Text('Sign in with Google'),
                     ),
                     ElevatedButton(
@@ -134,18 +145,22 @@ class LoginState extends State<MyApp> {
                   );
                 },
               ),
-            ),
-          );
+            )
+			:
+			Scaffold(
+				  body: Builder(
+					builder: (context) {
+						return Text('ouath_token:${authData?.idToken}');
+					}
+				)
+			)
+          ) ;
   }
+
 
   SignInCallback signInWithArgs(BuildContext context, ProviderArgs args) =>
       () async {
-        setState(() {
-          loginPage = true;
-        });
-        final result = await DesktopWebviewAuth.signIn(args);
-        // ignore: use_build_context_synchronously
-        notify(context, result?.toString());
+        await loginPage?.getAuthData();
       };
 
   void notify(BuildContext context, String? result) {

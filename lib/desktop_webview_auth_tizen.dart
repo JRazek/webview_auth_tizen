@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'oauth/oauth2.dart';
+import 'dart:async';
 
 const redirectUri =
     'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler';
 
+//ignore: must_be_immutable
 class GoogleLoginPage extends StatelessWidget {
   final Function(AuthData)? callback;
 
@@ -14,7 +16,9 @@ class GoogleLoginPage extends StatelessWidget {
   final String state;
   final String scope;
 
-  const GoogleLoginPage({
+  final Completer<AuthData> _completer = Completer();
+
+  GoogleLoginPage({
 	  required this.clientID,
 	  required this.state,
 	  required this.scope,
@@ -34,7 +38,17 @@ class GoogleLoginPage extends StatelessWidget {
       scope: scope,
       responseType: 'token id_token',
     ).authenticate(
-      onDone: callback!,
+      onDone: (authData) {
+		_completer.complete(authData);
+		if(callback != null){
+			callback!(authData);
+		}
+      },
     );
   }
+
+  Future<AuthData> getAuthData() async{
+	return _completer.future;
+  }
+
 }

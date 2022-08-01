@@ -24,18 +24,21 @@ class OAuth {
   final String host; // OAuth host
   final String path; // OAuth path
   final String clientID; // OAuth clientID
-  final String? responseType; // OAuth clientSecret
+  final String? responseType; // OAuth responseType
   final String redirectUri; // OAuth redirectUri
   final String? state; // OAuth state
   final String scope; // OAuth scope
   final Map<String, String> otherQueryParams;
-  static const String TOKEN_KEY = 'access_token'; // OAuth token key
-  static const String ID_TOKEN = 'id_token'; // OpenID id token
-  static const String CODE_KEY = 'code'; // OAuth code key
-  static const String STATE_KEY = 'state'; // OAuth state key
-  static const String SCOPE_KEY = 'scope'; // OAuth scope key
-  static const String CLIENT_ID_KEY = 'clientID'; // custom client id key
-  static const String REDIRECT_URI_KEY =
+
+  WebView? webview;
+
+  static const String kTokenKey = 'access_token'; // OAuth token key
+  static const String kIdToken = 'id_token'; // OpenID id token
+  static const String kCodeKey = 'code'; // OAuth code key
+  static const String kStateKey = 'state'; // OAuth state key
+  static const String kScopeKey = 'scope'; // OAuth scope key
+  static const String kClientIdKey = 'clientID'; // custom client id key
+  static const String kRedirectUriKey =
       'redirectURI'; // custom redirect uri key
   final String userAgent = 'Chrome/81.0.0.0 Mobile'; // UA
 
@@ -62,7 +65,7 @@ class OAuth {
         '$responseTypeQuery'
         '$otherParams';
 
-    return WebView(
+    return webview=WebView(
       onWebViewCreated: (controller) async {
         if (clearCache) {
           final cookieManager = CookieManager();
@@ -88,15 +91,15 @@ class OAuth {
         final url = request.url;
         if (url.startsWith(redirectUri)) {
           final returnedData = _getQueryParams(url);
-          returnedData[CLIENT_ID_KEY] = clientID;
-          returnedData[TOKEN_KEY] = clientID;
-          returnedData[REDIRECT_URI_KEY] = redirectUri;
-          returnedData[STATE_KEY] = state!;
+          returnedData[kClientIdKey] = clientID;
+          returnedData[kTokenKey] = clientID;
+          returnedData[kRedirectUriKey] = redirectUri;
+          returnedData[kStateKey] = state!;
 
           final authData = AuthData(
             clientID: clientID,
-            accessToken: returnedData[TOKEN_KEY],
-            idToken: returnedData[ID_TOKEN],
+            accessToken: returnedData[kTokenKey],
+            idToken: returnedData[kIdToken],
             response: returnedData,
           );
 

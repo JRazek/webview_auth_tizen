@@ -43,7 +43,7 @@ enum LoginStateE { selector, login_page, success }
 class LoginState extends State<MyApp> {
   LoginStateE state = LoginStateE.selector;
   AuthData? authData;
-  GoogleLoginPage? loginPage;
+  OAuthProviderPage? loginPage;
 
   void loginCallback(AuthData authData) {
     setState(() {

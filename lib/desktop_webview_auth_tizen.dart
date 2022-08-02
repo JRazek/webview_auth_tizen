@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'oauth/oauth2.dart';
 import 'dart:async';
 
-const redirectUri =
-    'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler';
+//const redirectUri =
+//    'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler';
 
 abstract class OAuthProviderPage extends StatelessWidget {
   final Function(AuthData)? callback;
@@ -19,6 +19,8 @@ abstract class OAuthProviderPage extends StatelessWidget {
   final String state;
   final String scope;
 
+  final String redirectUri;
+
   final Completer<AuthData> _completer = Completer();
 
   OAuthProviderPage({
@@ -28,6 +30,7 @@ abstract class OAuthProviderPage extends StatelessWidget {
     required this.clientID,
     required this.state,
     required this.scope,
+	required this.redirectUri,
     this.callback,
     Key? key,
   }) : super(key: key);
@@ -63,7 +66,9 @@ class GoogleLoginPage extends OAuthProviderPage {
     required super.clientID,
     required super.state,
     required super.scope,
+	required super.redirectUri,
     super.callback,
+
     super.key,
   }) : super(
           host: 'accounts.google.com',

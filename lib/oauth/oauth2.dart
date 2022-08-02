@@ -94,7 +94,6 @@ class OAuth {
         if (url.startsWith(redirectUri)) {
           final returnedData = _getQueryParams(url);
           returnedData[kClientIdKey] = clientID;
-          returnedData[kTokenKey] = clientID;
           returnedData[kRedirectUriKey] = redirectUri;
           returnedData[kStateKey] = state!;
 

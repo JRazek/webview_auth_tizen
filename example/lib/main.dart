@@ -7,10 +7,6 @@ import 'package:googleapis/identitytoolkit/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart';
 
 import 'package:desktop_webview_auth/desktop_webview_auth.dart';
-import 'package:desktop_webview_auth/facebook.dart';
-import 'package:desktop_webview_auth/github.dart';
-import 'package:desktop_webview_auth/google.dart';
-import 'package:desktop_webview_auth/twitter.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +38,7 @@ class MyApp extends StatefulWidget {
   }
 }
 
-enum LoginStateE{ selector, login_page, success }
+enum LoginStateE { selector, login_page, success }
 
 class LoginState extends State<MyApp> {
   LoginStateE state = LoginStateE.selector;
@@ -51,24 +47,16 @@ class LoginState extends State<MyApp> {
 
   void loginCallback(AuthData authData) {
     setState(() {
-	  state = LoginStateE.success;
-	  this.authData = authData;
+      state = LoginStateE.success;
+      this.authData = authData;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return 
-		state == LoginStateE.login_page
-        ? 
-		loginPage = GoogleLoginPage(
-			clientID: '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com',
-			state: 'profile',
-			scope: 'https://www.googleapis.com/auth/userinfo.email',
-            callback: loginCallback,
-		)
-        : 
-		MaterialApp(
+    return state == LoginStateE.login_page
+        ? loginPage!
+        : MaterialApp(
             theme: ThemeData(
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ButtonStyle(
@@ -76,92 +64,63 @@ class LoginState extends State<MyApp> {
                 ),
               ),
             ),
-            home: 
-			
-			state == LoginStateE.selector ?
+            home: state == LoginStateE.selector
+                ? Scaffold(
+                    body: Builder(
+                      builder: (context) {
+                        final buttons = [
+                          ElevatedButton(
+                            onPressed: (){ googleSignIn(); },
+                            child: const Text('Sign in with Google'),
+                          ),
+                          ElevatedButton(
+                            child: const Text('Recaptcha Verification'),
+                            onPressed: () => getRecaptchaVerification(context),
+                          ),
+                        ];
 
-			Scaffold(
-              body: Builder(
-                builder: (context) {
-                  final buttons = [
-                    ElevatedButton(
-                      onPressed: (){
-						setState(() {
-						  state = LoginStateE.login_page;
-						});
-					  },
-                      child: const Text('Sign in with Google'),
+                        return Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 300),
+                            child: ListView.separated(
+                              itemCount: buttons.length,
+                              shrinkWrap: true,
+                              separatorBuilder: (_, __) => const Divider(),
+                              itemBuilder: (context, index) {
+                                return buttons[index];
+                              },
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                    ElevatedButton(
-                      onPressed: signInWithArgs(
-                        context,
-                        TwitterSignInArgs(
-                          apiKey: TWITTER_API_KEY,
-                          apiSecretKey: TWITTER_API_SECRET_KEY,
-                          redirectUri: REDIRECT_URI,
-                        ),
-                      ),
-                      child: const Text('Sign in with Twitter'),
-                    ),
-                    ElevatedButton(
-                      onPressed: signInWithArgs(
-                        context,
-                        FacebookSignInArgs(
-                          clientId: FACEBOOK_CLIENT_ID,
-                          redirectUri: REDIRECT_URI,
-                        ),
-                      ),
-                      child: const Text('Sign in with Facebook'),
-                    ),
-                    ElevatedButton(
-                      onPressed: signInWithArgs(
-                        context,
-                        GitHubSignInArgs(
-                          clientId: GITHUB_CLIENT_ID,
-                          clientSecret: GITHUB_CLIENT_SECRET,
-                          redirectUri: REDIRECT_URI,
-                        ),
-                      ),
-                      child: const Text('Sign in with GitHub'),
-                    ),
-                    ElevatedButton(
-                      child: const Text('Recaptcha Verification'),
-                      onPressed: () => getRecaptchaVerification(context),
-                    ),
-                  ];
-
-                  return Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 300),
-                      child: ListView.separated(
-                        itemCount: buttons.length,
-                        shrinkWrap: true,
-                        separatorBuilder: (_, __) => const Divider(),
-                        itemBuilder: (context, index) {
-                          return buttons[index];
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-			:
-			Scaffold(
-				  body: Builder(
-					builder: (context) {
-						return Text('ouath_token:${authData?.idToken}');
-					}
-				)
-			)
-          ) ;
+                  )
+                : Scaffold(body: Builder(builder: (context) {
+                    return Text('ouath_token:${authData?.idToken}');
+                  })));
   }
 
+  Future googleSignIn() async {
+	loginPage = GoogleLoginPage(
+	  clientID:
+		  '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com',
+	  state: 'profile',
+	  scope: 'https://www.googleapis.com/auth/userinfo.email',
+	);
 
-  SignInCallback signInWithArgs(BuildContext context, ProviderArgs args) =>
-      () async {
-        await loginPage?.getAuthData();
-      };
+	setState(() {
+	  state = LoginStateE.login_page;
+	});
+	
+	debugPrint(state.toString());
+
+	authData = await loginPage?.getAuthData();
+
+	setState(() {
+	  state = LoginStateE.success;
+	});
+	
+  }
 
   void notify(BuildContext context, String? result) {
     ScaffoldMessenger.of(context).showSnackBar(

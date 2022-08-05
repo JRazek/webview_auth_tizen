@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/identitytoolkit/v3.dart';
 import 'package:googleapis_auth/googleapis_auth.dart';
 
-import 'package:desktop_webview_auth/desktop_webview_auth.dart';
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -26,8 +24,8 @@ const TWITTER_API_SECRET_KEY =
     'DOd9dCCRFgtnqMDQT7A68YuGZtvcO4WP1mEFS4mEJAUooM4yaE';
 const FACEBOOK_CLIENT_ID = '128693022464535';
 
-const GITHUB_CLIENT_ID = '582d07c80a9afae77406';
-const GITHUB_CLIENT_SECRET = '2d60f5e850bc178dfa6b7f6c6e37a65b175172d3';
+const GITHUB_CLIENT_ID = '';
+const GITHUB_CLIENT_SECRET = '';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -42,10 +40,10 @@ enum LoginStateE { selector, login_page, success }
 
 class LoginState extends State<MyApp> {
   LoginStateE state = LoginStateE.selector;
-  AuthData? authData;
+  AuthResult? authData;
   OAuthProviderPage? loginPage;
 
-  void loginCallback(AuthData authData) {
+  void loginCallback(AuthResult authData) {
     setState(() {
       state = LoginStateE.success;
       this.authData = authData;
@@ -72,16 +70,27 @@ class LoginState extends State<MyApp> {
                           ElevatedButton(
                             onPressed: () {
                               oauthSignIn(GoogleLoginPage(
-                                clientID:
-                                    '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com',
+                                clientID: GOOGLE_CLIENT_ID,
                                 state: 'profile',
                                 scope:
                                     'https://www.googleapis.com/auth/userinfo.email',
-                                redirectUri:
-                                    'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler',
+                                redirectUri: REDIRECT_URI,
                               ));
                             },
                             child: const Text('Sign in with Google'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              oauthSignIn(GithubLoginPage(
+                                clientID: GITHUB_CLIENT_ID,
+                                state: 'profile',
+                                scope:
+                                    'user',
+                                redirectUri: REDIRECT_URI,
+								clientSecret: GITHUB_CLIENT_SECRET,
+                              ));
+                            },
+                            child: const Text('Sign in with Github'),
                           ),
                           ElevatedButton(
                             child: const Text('Recaptcha Verification'),
@@ -135,24 +144,24 @@ class LoginState extends State<MyApp> {
   }
 
   Future<void> getRecaptchaVerification(BuildContext context) async {
-    final client = clientViaApiKey(apiKey);
-    final identityToolkit = IdentityToolkitApi(client);
-    final res = identityToolkit.relyingparty;
+ //   final client = clientViaApiKey(apiKey);
+ //   final identityToolkit = IdentityToolkitApi(client);
+ //   final res = identityToolkit.relyingparty;
 
-    final recaptchaResponse = await res.getRecaptchaParam();
+//    final recaptchaResponse = await res.getRecaptchaParam();
 
-    final args = RecaptchaArgs(
-      siteKey: recaptchaResponse.recaptchaSiteKey!,
-      siteToken: recaptchaResponse.recaptchaStoken!,
-    );
+//    final args = RecaptchaArgs(
+//      siteKey: recaptchaResponse.recaptchaSiteKey!,
+//      siteToken: recaptchaResponse.recaptchaStoken!,
+//    );
 
-    final result = await DesktopWebviewAuth.recaptchaVerification(
-      args,
-      height: 600,
-      width: 600,
-    );
+//    final result = await DesktopWebviewAuth.recaptchaVerification(
+//      args,
+//      height: 600,
+//      width: 600,
+//    );
 
     // ignore: use_build_context_synchronously
-    notify(context, result?.verificationId);
+//    notify(context, result?.verificationId);
   }
 }

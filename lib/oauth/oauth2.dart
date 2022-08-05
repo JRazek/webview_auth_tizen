@@ -22,7 +22,7 @@ class OAuth {
   static const String scheme = 'https';
   final String host; // OAuth host
   final String path; // OAuth path
-  final String? clientID; // OAuth clientID
+  final String clientID; // OAuth clientID
   final String? responseType; // OAuth responseType
   final String redirectUri; // OAuth redirectUri
   final String? state; // OAuth state
@@ -45,7 +45,7 @@ class OAuth {
   /// [onDone] is called when authentication is
   /// completed successfully.
   WebView authenticate({
-    required Function(AuthData) onDone,
+    required Function(AuthResult) onDone,
     bool clearCache = false,
   }) {
     final responseTypeQuery = '&response_type=${responseType ?? 'id_token'}';
@@ -58,12 +58,13 @@ class OAuth {
     String baseUrl = '$scheme://$host$path';
 
     final authUrl = '$baseUrl?'
-        '{ clientID != null ? "&client_id=${Uri.encodeComponent(clientID!)}" : ""}'
+        '&client_id=${Uri.encodeComponent(clientID)}'
         '&redirect_uri=${Uri.encodeComponent(redirectUri)}'
-        '{ state != null ? "&state=${Uri.encodeComponent(scope)}" : ""}'
+        '${ state != null ? "&state=${Uri.encodeComponent(scope)}" : ""}'
         '&scope=${Uri.encodeComponent(scope)}'
         '$responseTypeQuery'
-        '$otherParams';
+        '$otherParams'
+		;
 
     return webview=WebView(
       onWebViewCreated: (controller) async {
@@ -85,24 +86,28 @@ class OAuth {
   /// navigates to a new page. Once the redirect url
   /// is found, it calls the [onDone] callback.
   NavigationDecision Function(NavigationRequest request) _getNavigationDelegate(
-    Function(AuthData) onDone,
+    Function(AuthResult) onDone,
   ) =>
       (request) {
         final url = request.url;
+
+		print(url);
+
         if (url.startsWith(redirectUri)) {
           final returnedData = _getQueryParams(url);
-          if(clientID != null) returnedData[kClientIdKey] = clientID!;
+          returnedData[kClientIdKey] = clientID;
           returnedData[kRedirectUriKey] = redirectUri;
           returnedData[kStateKey] = state!;
 
-          final authData = AuthData(
+          final authResult = AuthResult(
             clientID: clientID,
             accessToken: returnedData[kTokenKey],
             idToken: returnedData[kIdToken],
+            code: returnedData[kCodeKey],
             response: returnedData,
           );
 
-          onDone(authData);
+          onDone(authResult);
         }
 
         return NavigationDecision.navigate;

@@ -10,77 +10,76 @@ class AuthData {
   // ignore: public_member_api_docs
   const AuthData({
     required this.clientID,
-    this.accessToken,
-    this.idToken,
     this.firstName,
     this.lastName,
     this.userID,
     this.email,
     this.profileImgUrl,
+    this.code,
     this.userJson,
-    required this.response,
   });
 
   final String? userID; // User's profile id
   final String? clientID; // OAuth client id
-  final String? accessToken; // OAuth access token
-  final String? idToken; // OpenID id token
   final String? firstName; // User's first name
   final String? lastName; // User's last name
   final String? email; // User's email
   final String? profileImgUrl; // User's profile image url
+  final String? code; // code returned from authorize endpoint
   final Map<String, dynamic>? userJson; // Full returned user json
-  final Map<String, String> response; // Full returned auth response.
 
   /// Creates a formatted string from
   /// the response data.
-  String _formatResponse() {
-    final result = StringBuffer('\n');
+//  String _formatResponse() {
+//    final result = StringBuffer('\n');
+//
+//    for (final MapEntry data in response.entries) {
+//      result.write('\t\t\t\t');
+//      result.write(data.key);
+//      result.write(' = ');
+//      result.write(data.value);
+//      result.write('\n');
+//    }
+//
+//    return result.toString();
+//  }
 
-    for (final MapEntry data in response.entries) {
-      result.write('\t\t\t\t');
-      result.write(data.key);
-      result.write(' = ');
-      result.write(data.value);
-      result.write('\n');
-    }
-
-    return result.toString();
-  }
-
-  /// Formats user json for printing
-  String _formatJson() {
-    return const JsonEncoder.withIndent('    ').convert(userJson);
-  }
+//  /// Formats user json for printing
+//  String _formatJson() {
+//    return const JsonEncoder.withIndent('    ').convert(userJson);
+//  }
 
   /// The only public method in this class
   /// Returns all the data in this class as
   /// a formatted string.
-  @override
-  String toString() {
-    final responseString = _formatResponse();
-    final prettyUserJson = _formatJson();
-
-    return 'AuthData {\n\n'
-        '\t\ttoken: $accessToken\n\n'
-        '\t\tid_token: $idToken\n\n'
-        '\t\tuser id: $userID\n\n'
-        '\t\tfirst name: $firstName\n\n'
-        '\t\tlast name: $lastName\n\n'
-        '\t\temail: $email\n\n'
-        '\t\tprofile image: $profileImgUrl\n\n'
-        '\t\tresponse: $responseString\n'
-        '\t\tuser json: $prettyUserJson\n\n'
-        '}';
-  }
+//  @override
+//  String toString() {
+//    final responseString = _formatResponse();
+//    final prettyUserJson = _formatJson();
+//
+//    return 'AuthData {\n\n'
+//        '\t\ttoken: $accessToken\n\n'
+//        '\t\tid_token: $idToken\n\n'
+//        '\t\tuser id: $userID\n\n'
+//        '\t\tfirst name: $firstName\n\n'
+//        '\t\tlast name: $lastName\n\n'
+//        '\t\temail: $email\n\n'
+//        '\t\tprofile image: $profileImgUrl\n\n'
+//        '\t\tresponse: $responseString\n'
+//        '\t\tuser json: $prettyUserJson\n\n'
+//        '}';
+//  }
 }
 
 class AuthResult {
-  final String? accessToken;
-  final String? idToken;
-  final String? tokenSecret;
+  String? accessToken;
+  String? idToken;
+  String? tokenSecret;
+  String? code;
+  String? clientID;
+  Map<String, String> response;
 
-  AuthResult({this.accessToken, this.idToken, this.tokenSecret});
+  AuthResult({this.accessToken, this.idToken, this.tokenSecret, this.code, this.clientID, this.response = const {}});
 
   @override
   String toString() {

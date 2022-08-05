@@ -5,30 +5,34 @@ import 'package:flutter/widgets.dart';
 import 'oauth/oauth2.dart';
 import 'dart:async';
 
+import 'package:http/http.dart' as http;
+
 abstract class OAuthProviderPage extends StatelessWidget {
-  final Function(AuthData)? callback;
+  final Function(AuthResult, Completer<AuthResult>) callback;
 
   final String host;
   final String path;
   final String responseType;
 
-  final String? clientID;
+  final String clientID;
   final String state;
   final String scope;
+  final String? clientSecret;
 
   final String redirectUri;
 
-  final Completer<AuthData> _completer = Completer();
+  final Completer<AuthResult> _completer = Completer();
 
   OAuthProviderPage({
     required this.host,
     required this.path,
     required this.responseType,
     required this.clientID,
+    this.clientSecret,
     required this.state,
     required this.scope,
-	required this.redirectUri,
-    this.callback,
+    required this.redirectUri,
+    required this.callback,
     Key? key,
   }) : super(key: key);
 
@@ -42,17 +46,12 @@ abstract class OAuthProviderPage extends StatelessWidget {
       state: state,
       scope: scope,
       responseType: responseType,
-    ).authenticate(
-      onDone: (authData) {
-        _completer.complete(authData);
-        if (callback != null) {
-          callback!(authData);
-        }
-      },
-    );
+    ).authenticate(onDone: (authResult) {
+      callback(authResult, _completer);
+    });
   }
 
-  Future<AuthData> getAuthData() async {
+  Future<AuthResult> getAuthData() async {
     return _completer.future;
   }
 }
@@ -63,30 +62,73 @@ class GoogleLoginPage extends OAuthProviderPage {
     required super.clientID,
     required super.state,
     required super.scope,
-	required super.redirectUri,
-    super.callback,
-
+    required super.redirectUri,
     super.key,
   }) : super(
-          host: 'accounts.google.com',
-          path: '/o/oauth2/auth',
-          responseType: 'token id_token',
-        );
+            host: 'accounts.google.com',
+            path: '/o/oauth2/auth',
+            responseType: 'token id_token',
+            callback: (authResult, completer) {
+              completer.complete(authResult);
+            });
 }
 
 //ignore: must_be_immutable
 class GithubLoginPage extends OAuthProviderPage {
+  static const kAccessTokenPath = '/login/oauth/access_token';
+  static const host_ = 'github.com';
+  static const path_ = '/login/oauth/authorize';
+  static const responseType_ = 'token id_token';
+
   GithubLoginPage({
-    super.clientID,
+    required super.clientID,
     required super.state,
     required super.scope,
-	required super.redirectUri,
-    super.callback,
-
+    required super.redirectUri,
+    required super.clientSecret,
     super.key,
   }) : super(
-          host: 'github.com',
-          path: '/login/oauth/authorize',
-          responseType: 'token id_token',
-        );
+            host: host_,
+            path: path_,
+            responseType: responseType_,
+            callback: (authResult, completer) async{
+              if (authResult.code == null) {
+                throw Exception('github did not return code!');
+              }
+
+              final result = await post(kAccessTokenPath, {
+                'client_id': clientID,
+                'client_secret': clientSecret!,
+                'code': authResult.code!,
+                'redirect_uri': redirectUri,
+              });
+
+			  authResult.accessToken = result;
+
+			  completer.complete(authResult);
+            });
+
+  static Future<String?> post(String path, Map<String, String> params) async {
+    final uri = Uri(
+      scheme: 'https',
+      host: host_,
+      path: path_,
+    );
+
+    try {
+      final res = await http.post(
+        uri,
+        headers: {"Accept": "application/json"},
+        body: params,
+      );
+
+      if (res.statusCode == 200) {
+        return res.body;
+      } else {
+        throw Exception('HttpCode: ${res.statusCode}, Body: ${res.body}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

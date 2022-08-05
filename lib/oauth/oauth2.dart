@@ -1,8 +1,5 @@
 import 'dart:collection';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'auth-data.dart';
 
 /// This class contains [OAuth] data and
@@ -25,7 +22,7 @@ class OAuth {
   static const String scheme = 'https';
   final String host; // OAuth host
   final String path; // OAuth path
-  final String clientID; // OAuth clientID
+  final String? clientID; // OAuth clientID
   final String? responseType; // OAuth responseType
   final String redirectUri; // OAuth redirectUri
   final String? state; // OAuth state
@@ -60,9 +57,10 @@ class OAuth {
 
     String baseUrl = '$scheme://$host$path';
 
-    final authUrl = '$baseUrl'
-        '?client_id=${Uri.encodeComponent(clientID)}'
+    final authUrl = '$baseUrl?'
+        '{ clientID != null ? "&client_id=${Uri.encodeComponent(clientID!)}" : ""}'
         '&redirect_uri=${Uri.encodeComponent(redirectUri)}'
+        '{ state != null ? "&state=${Uri.encodeComponent(scope)}" : ""}'
         '&scope=${Uri.encodeComponent(scope)}'
         '$responseTypeQuery'
         '$otherParams';
@@ -93,7 +91,7 @@ class OAuth {
         final url = request.url;
         if (url.startsWith(redirectUri)) {
           final returnedData = _getQueryParams(url);
-          returnedData[kClientIdKey] = clientID;
+          if(clientID != null) returnedData[kClientIdKey] = clientID!;
           returnedData[kRedirectUriKey] = redirectUri;
           returnedData[kStateKey] = state!;
 

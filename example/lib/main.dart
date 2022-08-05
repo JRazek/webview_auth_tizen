@@ -70,7 +70,17 @@ class LoginState extends State<MyApp> {
                       builder: (context) {
                         final buttons = [
                           ElevatedButton(
-                            onPressed: (){ googleSignIn(); },
+                            onPressed: () {
+                              oauthSignIn(GoogleLoginPage(
+                                clientID:
+                                    '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com',
+                                state: 'profile',
+                                scope:
+                                    'https://www.googleapis.com/auth/userinfo.email',
+                                redirectUri:
+                                    'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler',
+                              ));
+                            },
                             child: const Text('Sign in with Google'),
                           ),
                           ElevatedButton(
@@ -100,26 +110,20 @@ class LoginState extends State<MyApp> {
                   })));
   }
 
-  Future googleSignIn() async {
-	loginPage = GoogleLoginPage(
-	  clientID:
-		  '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com',
-	  state: 'profile',
-	  scope: 'https://www.googleapis.com/auth/userinfo.email',
-	);
+  Future oauthSignIn(OAuthProviderPage page) async {
+    loginPage = page;
 
-	setState(() {
-	  state = LoginStateE.login_page;
-	});
-	
-	debugPrint(state.toString());
+    setState(() {
+      state = LoginStateE.login_page;
+    });
 
-	authData = await loginPage?.getAuthData();
+    debugPrint(state.toString());
 
-	setState(() {
-	  state = LoginStateE.success;
-	});
-	
+    authData = await loginPage?.getAuthData();
+
+    setState(() {
+      state = LoginStateE.success;
+    });
   }
 
   void notify(BuildContext context, String? result) {

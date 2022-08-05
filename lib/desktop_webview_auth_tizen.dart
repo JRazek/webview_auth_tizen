@@ -5,9 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'oauth/oauth2.dart';
 import 'dart:async';
 
-//const redirectUri =
-//    'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler';
-
 abstract class OAuthProviderPage extends StatelessWidget {
   final Function(AuthData)? callback;
 
@@ -15,7 +12,7 @@ abstract class OAuthProviderPage extends StatelessWidget {
   final String path;
   final String responseType;
 
-  final String clientID;
+  final String? clientID;
   final String state;
   final String scope;
 
@@ -73,6 +70,23 @@ class GoogleLoginPage extends OAuthProviderPage {
   }) : super(
           host: 'accounts.google.com',
           path: '/o/oauth2/auth',
+          responseType: 'token id_token',
+        );
+}
+
+//ignore: must_be_immutable
+class GithubLoginPage extends OAuthProviderPage {
+  GithubLoginPage({
+    super.clientID,
+    required super.state,
+    required super.scope,
+	required super.redirectUri,
+    super.callback,
+
+    super.key,
+  }) : super(
+          host: 'github.com',
+          path: '/login/oauth/authorize',
           responseType: 'token id_token',
         );
 }

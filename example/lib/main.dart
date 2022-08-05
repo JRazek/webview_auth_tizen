@@ -115,7 +115,7 @@ class LoginState extends State<MyApp> {
                     ),
                   )
                 : Scaffold(body: Builder(builder: (context) {
-                    return Text('ouath_token:${authData?.idToken}');
+                    return Text('oauth_token:${authData?.accessToken}');
                   })));
   }
 

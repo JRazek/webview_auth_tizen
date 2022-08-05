@@ -7,6 +7,8 @@ import 'dart:async';
 
 import 'package:http/http.dart' as http;
 
+import 'dart:convert';
+
 abstract class OAuthProviderPage extends StatelessWidget {
   final Function(AuthResult, Completer<AuthResult>) callback;
 
@@ -91,29 +93,42 @@ class GithubLoginPage extends OAuthProviderPage {
             host: host_,
             path: path_,
             responseType: responseType_,
-            callback: (authResult, completer) async{
-              if (authResult.code == null) {
-                throw Exception('github did not return code!');
+            callback: (authResult, completer) async {
+              if (!completer.isCompleted) {
+                if (authResult.code == null) {
+                  throw Exception('github did not return code!');
+                }
+
+                final result = await post(kAccessTokenPath, {
+                  'client_id': clientID,
+                  'client_secret': clientSecret!,
+                  'code': authResult.code!,
+                  'redirect_uri': redirectUri,
+                });
+
+                if (result == null) throw Exception("Couldn't authroize");
+
+                final decodedRes = json.decode(result);
+
+                authResult.accessToken = decodedRes['access_token'];
+
+                print('counter');
+
+                completer.complete(authResult);
               }
-
-              final result = await post(kAccessTokenPath, {
-                'client_id': clientID,
-                'client_secret': clientSecret!,
-                'code': authResult.code!,
-                'redirect_uri': redirectUri,
-              });
-
-			  authResult.accessToken = result;
-
-			  completer.complete(authResult);
             });
 
   static Future<String?> post(String path, Map<String, String> params) async {
-    final uri = Uri(
-      scheme: 'https',
-      host: host_,
-      path: path_,
-    );
+    final paramsString = StringBuffer();
+
+    for (final key in params.keys) {
+      paramsString.write('&$key=${params[key]}');
+    }
+
+    var uri =
+        Uri(scheme: 'https', host: host_, path: path, queryParameters: params);
+
+    print(uri);
 
     try {
       final res = await http.post(

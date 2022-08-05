@@ -16,7 +16,6 @@ class AuthData {
     this.email,
     this.profileImgUrl,
     this.code,
-    this.userJson,
   });
 
   final String? userID; // User's profile id
@@ -26,49 +25,6 @@ class AuthData {
   final String? email; // User's email
   final String? profileImgUrl; // User's profile image url
   final String? code; // code returned from authorize endpoint
-  final Map<String, dynamic>? userJson; // Full returned user json
-
-  /// Creates a formatted string from
-  /// the response data.
-//  String _formatResponse() {
-//    final result = StringBuffer('\n');
-//
-//    for (final MapEntry data in response.entries) {
-//      result.write('\t\t\t\t');
-//      result.write(data.key);
-//      result.write(' = ');
-//      result.write(data.value);
-//      result.write('\n');
-//    }
-//
-//    return result.toString();
-//  }
-
-//  /// Formats user json for printing
-//  String _formatJson() {
-//    return const JsonEncoder.withIndent('    ').convert(userJson);
-//  }
-
-  /// The only public method in this class
-  /// Returns all the data in this class as
-  /// a formatted string.
-//  @override
-//  String toString() {
-//    final responseString = _formatResponse();
-//    final prettyUserJson = _formatJson();
-//
-//    return 'AuthData {\n\n'
-//        '\t\ttoken: $accessToken\n\n'
-//        '\t\tid_token: $idToken\n\n'
-//        '\t\tuser id: $userID\n\n'
-//        '\t\tfirst name: $firstName\n\n'
-//        '\t\tlast name: $lastName\n\n'
-//        '\t\temail: $email\n\n'
-//        '\t\tprofile image: $profileImgUrl\n\n'
-//        '\t\tresponse: $responseString\n'
-//        '\t\tuser json: $prettyUserJson\n\n'
-//        '}';
-//  }
 }
 
 class AuthResult {

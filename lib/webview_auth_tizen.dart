@@ -1,4 +1,4 @@
-import 'package:desktop_webview_auth_tizen/oauth/auth-data.dart';
+import 'package:webview_auth_tizen/oauth/auth-data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -112,8 +112,6 @@ class GithubLoginPage extends OAuthProviderPage {
 
                 authResult.accessToken = decodedRes['access_token'];
 
-                print('counter');
-
                 completer.complete(authResult);
               }
             });
@@ -127,8 +125,6 @@ class GithubLoginPage extends OAuthProviderPage {
 
     var uri =
         Uri(scheme: 'https', host: host_, path: path, queryParameters: params);
-
-    print(uri);
 
     try {
       final res = await http.post(

@@ -1,10 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:desktop_webview_auth_tizen/desktop_webview_auth_tizen.dart';
-import 'package:desktop_webview_auth_tizen/oauth/auth-data.dart';
+import 'package:webview_auth_tizen/webview_auth_tizen.dart';
+import 'package:webview_auth_tizen/oauth/auth-data.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/identitytoolkit/v3.dart';
-import 'package:googleapis_auth/googleapis_auth.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +17,6 @@ const GOOGLE_CLIENT_ID =
     '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com';
 const REDIRECT_URI =
     'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler';
-const TWITTER_API_KEY = 'YEXSiWv5UeCHyy0c61O2LBC3B';
-const TWITTER_API_SECRET_KEY =
-    'DOd9dCCRFgtnqMDQT7A68YuGZtvcO4WP1mEFS4mEJAUooM4yaE';
-const FACEBOOK_CLIENT_ID = '128693022464535';
 
 const GITHUB_CLIENT_ID = '';
 const GITHUB_CLIENT_SECRET = '';
@@ -92,10 +86,6 @@ class LoginState extends State<MyApp> {
                             },
                             child: const Text('Sign in with Github'),
                           ),
-                          ElevatedButton(
-                            child: const Text('Recaptcha Verification'),
-                            onPressed: () => getRecaptchaVerification(context),
-                          ),
                         ];
 
                         return Center(
@@ -141,27 +131,5 @@ class LoginState extends State<MyApp> {
         content: Text('Result: $result'),
       ),
     );
-  }
-
-  Future<void> getRecaptchaVerification(BuildContext context) async {
- //   final client = clientViaApiKey(apiKey);
- //   final identityToolkit = IdentityToolkitApi(client);
- //   final res = identityToolkit.relyingparty;
-
-//    final recaptchaResponse = await res.getRecaptchaParam();
-
-//    final args = RecaptchaArgs(
-//      siteKey: recaptchaResponse.recaptchaSiteKey!,
-//      siteToken: recaptchaResponse.recaptchaStoken!,
-//    );
-
-//    final result = await DesktopWebviewAuth.recaptchaVerification(
-//      args,
-//      height: 600,
-//      width: 600,
-//    );
-
-    // ignore: use_build_context_synchronously
-//    notify(context, result?.verificationId);
   }
 }

@@ -1,7 +1,7 @@
 # See https://docs.tizen.org/application/tizen-studio/native-tools/project-conversion
 # for details.
 
-APPNAME = desktop_webview_auth_tizen_plugin
+APPNAME = webview_auth_tizen_plugin
 type = staticLib
 profile = common-5.5
 

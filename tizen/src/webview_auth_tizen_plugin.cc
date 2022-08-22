@@ -1,4 +1,4 @@
-#include "desktop_webview_auth_tizen_plugin.h"
+#include "webview_auth_tizen_plugin.h"
 
 // For getPlatformVersion; remove unless needed for your plugin implementation.
 #include <flutter/method_channel.h>
@@ -13,24 +13,24 @@
 
 namespace {
 
-class DesktopWebviewAuthTizenPlugin : public flutter::Plugin {
+class WebviewAuthTizenPlugin : public flutter::Plugin {
  public:
   static void RegisterWithRegistrar(flutter::PluginRegistrar *registrar) {
-    auto plugin = std::make_unique<DesktopWebviewAuthTizenPlugin>();
+    auto plugin = std::make_unique<WebviewAuthTizenPlugin>();
 
     registrar->AddPlugin(std::move(plugin));
   }
 
-  DesktopWebviewAuthTizenPlugin() {}
+  WebviewAuthTizenPlugin() {}
 
-  virtual ~DesktopWebviewAuthTizenPlugin() {}
+  virtual ~WebviewAuthTizenPlugin() {}
 };
 
 }  // namespace
 
-void DesktopWebviewAuthTizenPluginRegisterWithRegistrar(
+void WebviewAuthTizenPluginRegisterWithRegistrar(
     FlutterDesktopPluginRegistrarRef registrar) {
-  DesktopWebviewAuthTizenPlugin::RegisterWithRegistrar(
+  WebviewAuthTizenPlugin::RegisterWithRegistrar(
       flutter::PluginRegistrarManager::GetInstance()
           ->GetRegistrar<flutter::PluginRegistrar>(registrar));
 }

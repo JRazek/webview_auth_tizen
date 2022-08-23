@@ -1,6 +1,6 @@
 import 'dart:collection';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'auth-data.dart';
+import 'auth_data.dart';
 
 /// This class contains [OAuth] data and
 /// functionality. It has one public method
@@ -31,14 +31,13 @@ class OAuth {
 
   WebView? webview;
 
-  static const String kTokenKey = 'access_token'; // OAuth token key
-  static const String kIdToken = 'id_token'; // OpenID id token
-  static const String kCodeKey = 'code'; // OAuth code key
-  static const String kStateKey = 'state'; // OAuth state key
-  static const String kScopeKey = 'scope'; // OAuth scope key
-  static const String kClientIdKey = 'clientID'; // custom client id key
-  static const String kRedirectUriKey =
-      'redirectURI'; // custom redirect uri key
+  static const String tokenKey = 'access_token'; // OAuth token key
+  static const String idToken = 'id_token'; // OpenID id token
+  static const String codeKey = 'code'; // OAuth code key
+  static const String stateKey = 'state'; // OAuth state key
+  static const String scopeKey = 'scope'; // OAuth scope key
+  static const String clientIdKey = 'clientID'; // custom client id key
+  static const String redirectUriKey = 'redirectURI'; // custom redirect uri key
   final String userAgent = 'Chrome/81.0.0.0 Mobile'; // UA
 
   /// Sets up a [WebView] for OAuth authentication.
@@ -60,13 +59,12 @@ class OAuth {
     final authUrl = '$baseUrl?'
         '&client_id=${Uri.encodeComponent(clientID)}'
         '&redirect_uri=${Uri.encodeComponent(redirectUri)}'
-        '${ state != null ? "&state=${Uri.encodeComponent(scope)}" : ""}'
+        '${state != null ? "&state=${Uri.encodeComponent(scope)}" : ""}'
         '&scope=${Uri.encodeComponent(scope)}'
         '$responseTypeQuery'
-        '$otherParams'
-		;
+        '$otherParams';
 
-    return webview=WebView(
+    return webview = WebView(
       onWebViewCreated: (controller) async {
         if (clearCache) {
           final cookieManager = CookieManager();
@@ -91,19 +89,17 @@ class OAuth {
       (request) {
         final url = request.url;
 
-		print(url);
-
         if (url.startsWith(redirectUri)) {
           final returnedData = _getQueryParams(url);
-          returnedData[kClientIdKey] = clientID;
-          returnedData[kRedirectUriKey] = redirectUri;
-          returnedData[kStateKey] = state!;
+          returnedData[clientIdKey] = clientID;
+          returnedData[redirectUriKey] = redirectUri;
+          returnedData[stateKey] = state!;
 
           final authResult = AuthResult(
             clientID: clientID,
-            accessToken: returnedData[kTokenKey],
-            idToken: returnedData[kIdToken],
-            code: returnedData[kCodeKey],
+            accessToken: returnedData[tokenKey],
+            idToken: returnedData[idToken],
+            code: returnedData[codeKey],
             response: returnedData,
           );
 

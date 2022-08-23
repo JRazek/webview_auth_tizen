@@ -1,4 +1,4 @@
-import 'package:webview_auth_tizen/oauth/auth-data.dart';
+import 'package:webview_auth_tizen/oauth/auth_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

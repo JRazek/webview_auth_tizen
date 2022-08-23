@@ -1,25 +1,22 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:webview_auth_tizen/webview_auth_tizen.dart';
-import 'package:webview_auth_tizen/oauth/auth-data.dart';
+import 'package:webview_auth_tizen/oauth/auth_data.dart';
 import 'package:flutter/material.dart';
+
+const googleClientId =
+    '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com';
+const redirectUri =
+    'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler';
+
+const githubClientId = '';
+const githubClientSecret = '';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const MyApp());
 }
-
-typedef SignInCallback = Future<void> Function();
-const String apiKey = 'AIzaSyAgUhHU8wSJgO5MVNy95tMT07NEjzMOfz0';
-
-const GOOGLE_CLIENT_ID =
-    '448618578101-sg12d2qin42cpr00f8b0gehs5s7inm0v.apps.googleusercontent.com';
-const REDIRECT_URI =
-    'https://react-native-firebase-testing.firebaseapp.com/__/auth/handler';
-
-const GITHUB_CLIENT_ID = '';
-const GITHUB_CLIENT_SECRET = '';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -64,11 +61,11 @@ class LoginState extends State<MyApp> {
                           ElevatedButton(
                             onPressed: () {
                               oauthSignIn(GoogleLoginPage(
-                                clientID: GOOGLE_CLIENT_ID,
+                                clientID: googleClientId,
                                 state: 'profile',
                                 scope:
                                     'https://www.googleapis.com/auth/userinfo.email',
-                                redirectUri: REDIRECT_URI,
+                                redirectUri: redirectUri,
                               ));
                             },
                             child: const Text('Sign in with Google'),
@@ -76,12 +73,11 @@ class LoginState extends State<MyApp> {
                           ElevatedButton(
                             onPressed: () {
                               oauthSignIn(GithubLoginPage(
-                                clientID: GITHUB_CLIENT_ID,
+                                clientID: githubClientId,
                                 state: 'profile',
-                                scope:
-                                    'user',
-                                redirectUri: REDIRECT_URI,
-								clientSecret: GITHUB_CLIENT_SECRET,
+                                scope: 'user',
+                                redirectUri: redirectUri,
+                                clientSecret: redirectUri,
                               ));
                             },
                             child: const Text('Sign in with Github'),

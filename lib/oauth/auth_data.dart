@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 /// This class contains the access token and
 /// variables that provide easy access to the
 /// common properties of a user. It also contains
 /// all data from the authentication response and
-/// the user response in 'response' and 'userJson'
-/// respectively.
+
 class AuthData {
   // ignore: public_member_api_docs
   const AuthData({
@@ -35,7 +32,13 @@ class AuthResult {
   String? clientID;
   Map<String, String> response;
 
-  AuthResult({this.accessToken, this.idToken, this.tokenSecret, this.code, this.clientID, this.response = const {}});
+  AuthResult(
+      {this.accessToken,
+      this.idToken,
+      this.tokenSecret,
+      this.code,
+      this.clientID,
+      this.response = const {}});
 
   @override
   String toString() {

@@ -77,7 +77,7 @@ class LoginState extends State<MyApp> {
                                 state: 'profile',
                                 scope: 'user',
                                 redirectUri: redirectUri,
-                                clientSecret: redirectUri,
+                                clientSecret: githubClientSecret,
                               ));
                             },
                             child: const Text('Sign in with Github'),
@@ -112,9 +112,7 @@ class LoginState extends State<MyApp> {
       state = LoginStateE.login_page;
     });
 
-    debugPrint(state.toString());
-
-    authData = await loginPage?.getAuthData();
+    authData = await loginPage!.authResult;
 
     setState(() {
       state = LoginStateE.success;

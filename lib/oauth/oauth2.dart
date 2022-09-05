@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'auth_data.dart';
 
+import 'dart:async';
+
 /// This class contains [OAuth] data and
 /// functionality. It has one public method
 /// that returns a [WebView] which has been set up
@@ -31,6 +33,16 @@ class OAuth {
 
   WebView? webview;
 
+  final Completer<AuthResult> _completer = Completer();
+
+  Completer<AuthResult> get completer {
+    return _completer;
+  }
+
+  Future<AuthResult> get authResult {
+    return _completer.future;
+  }
+
   static const String tokenKey = 'access_token'; // OAuth token key
   static const String idToken = 'id_token'; // OpenID id token
   static const String codeKey = 'code'; // OAuth code key
@@ -38,13 +50,11 @@ class OAuth {
   static const String scopeKey = 'scope'; // OAuth scope key
   static const String clientIdKey = 'clientID'; // custom client id key
   static const String redirectUriKey = 'redirectURI'; // custom redirect uri key
-  final String userAgent = 'Chrome/81.0.0.0 Mobile'; // UA
+  static const String userAgent = 'Chrome/81.0.0.0 Mobile'; // UA
 
   /// Sets up a [WebView] for OAuth authentication.
-  /// [onDone] is called when authentication is
   /// completed successfully.
   WebView authenticate({
-    required Function(AuthResult) onDone,
     bool clearCache = false,
   }) {
     final responseTypeQuery = '&response_type=${responseType ?? 'id_token'}';
@@ -75,39 +85,35 @@ class OAuth {
       userAgent: userAgent,
       initialUrl: authUrl,
       javascriptMode: JavascriptMode.unrestricted,
-      navigationDelegate: _getNavigationDelegate(onDone),
+      navigationDelegate: _getNavigationDelegate,
     );
   }
 
   /// Returns a navigation delegate that attempts
   /// to match the redirect url whenever the browser
   /// navigates to a new page. Once the redirect url
-  /// is found, it calls the [onDone] callback.
-  NavigationDecision Function(NavigationRequest request) _getNavigationDelegate(
-    Function(AuthResult) onDone,
-  ) =>
-      (request) {
-        final url = request.url;
+  NavigationDecision _getNavigationDelegate(NavigationRequest request) {
+    final url = request.url;
 
-        if (url.startsWith(redirectUri)) {
-          final returnedData = _getQueryParams(url);
-          returnedData[clientIdKey] = clientID;
-          returnedData[redirectUriKey] = redirectUri;
-          returnedData[stateKey] = state!;
+    if (url.startsWith(redirectUri)) {
+      final returnedData = _getQueryParams(url);
+      returnedData[clientIdKey] = clientID;
+      returnedData[redirectUriKey] = redirectUri;
+      returnedData[stateKey] = state!;
 
-          final authResult = AuthResult(
-            clientID: clientID,
-            accessToken: returnedData[tokenKey],
-            idToken: returnedData[idToken],
-            code: returnedData[codeKey],
-            response: returnedData,
-          );
+      final authResult = AuthResult(
+        clientID: clientID,
+        accessToken: returnedData[tokenKey],
+        idToken: returnedData[idToken],
+        code: returnedData[codeKey],
+        response: returnedData,
+      );
 
-          onDone(authResult);
-        }
+      _completer.complete(authResult);
+    }
 
-        return NavigationDecision.navigate;
-      };
+    return NavigationDecision.navigate;
+  }
 
   /// Parses url query params into a map
   /// @param url: The url to parse.

@@ -42,6 +42,6 @@ class AuthResult {
 
   @override
   String toString() {
-    return 'AuthResult(idToken: $idToken, accessToken: $accessToken, tokenSecret: $tokenSecret)';
+    return 'AuthResult(accessToken: $accessToken, idToken: $idToken, tokenSecret: $tokenSecret, code: $code, clientID: $clientID)';
   }
 }

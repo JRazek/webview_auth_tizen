@@ -10,8 +10,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 abstract class OAuthProviderPage extends StatelessWidget {
-  final Function(AuthResult, Completer<AuthResult>) callback;
-
   final String host;
   final String path;
   final String responseType;
@@ -23,7 +21,7 @@ abstract class OAuthProviderPage extends StatelessWidget {
 
   final String redirectUri;
 
-  final Completer<AuthResult> _completer = Completer();
+  OAuth oauth;
 
   OAuthProviderPage({
     required this.host,
@@ -34,28 +32,24 @@ abstract class OAuthProviderPage extends StatelessWidget {
     required this.state,
     required this.scope,
     required this.redirectUri,
-    required this.callback,
     Key? key,
-  }) : super(key: key);
+  })  : oauth = OAuth(
+          host: host,
+          path: path,
+          clientID: clientID,
+          redirectUri: redirectUri,
+          state: state,
+          scope: scope,
+          responseType: responseType,
+        ),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return OAuth(
-      host: host,
-      path: path,
-      clientID: clientID,
-      redirectUri: redirectUri,
-      state: state,
-      scope: scope,
-      responseType: responseType,
-    ).authenticate(onDone: (authResult) {
-      callback(authResult, _completer);
-    });
+    return oauth.authenticate();
   }
 
-  Future<AuthResult> getAuthData() async {
-    return _completer.future;
-  }
+  Future<AuthResult> get authResult;
 }
 
 //ignore: must_be_immutable
@@ -67,12 +61,15 @@ class GoogleLoginPage extends OAuthProviderPage {
     required super.redirectUri,
     super.key,
   }) : super(
-            host: 'accounts.google.com',
-            path: '/o/oauth2/auth',
-            responseType: 'token id_token',
-            callback: (authResult, completer) {
-              completer.complete(authResult);
-            });
+          host: 'accounts.google.com',
+          path: '/o/oauth2/auth',
+          responseType: 'token id_token',
+        );
+
+  @override
+  Future<AuthResult> get authResult async {
+    return oauth.authResult;
+  }
 }
 
 //ignore: must_be_immutable
@@ -90,56 +87,51 @@ class GithubLoginPage extends OAuthProviderPage {
     required super.clientSecret,
     super.key,
   }) : super(
-            host: host_,
-            path: path_,
-            responseType: responseType_,
-            callback: (authResult, completer) async {
-              if (!completer.isCompleted) {
-                if (authResult.code == null) {
-                  throw Exception('github did not return code!');
-                }
+          host: host_,
+          path: path_,
+          responseType: responseType_,
+        );
 
-                final result = await post(kAccessTokenPath, {
-                  'client_id': clientID,
-                  'client_secret': clientSecret!,
-                  'code': authResult.code!,
-                  'redirect_uri': redirectUri,
-                });
+  @override
+  Future<AuthResult> get authResult async {
+    final authResult = await oauth.authResult;
 
-                if (result == null) throw Exception("Couldn't authroize");
-
-                final decodedRes = json.decode(result);
-
-                authResult.accessToken = decodedRes['access_token'];
-
-                completer.complete(authResult);
-              }
-            });
-
-  static Future<String?> post(String path, Map<String, String> params) async {
-    final paramsString = StringBuffer();
-
-    for (final key in params.keys) {
-      paramsString.write('&$key=${params[key]}');
+    if (authResult.code == null) {
+      throw Exception('github did not return code!');
     }
 
+    final result = await post(kAccessTokenPath, {
+      'client_id': clientID,
+      'client_secret': clientSecret!,
+      'code': authResult.code!,
+      'redirect_uri': redirectUri,
+    });
+
+    authResult.accessToken = result['access_token'];
+
+    return authResult;
+  }
+
+  static Future post(String path, Map<String, String> params) async {
     var uri =
         Uri(scheme: 'https', host: host_, path: path, queryParameters: params);
 
-    try {
-      final res = await http.post(
-        uri,
-        headers: {"Accept": "application/json"},
-        body: params,
-      );
+    final res = await http.post(
+      uri,
+      headers: {"Accept": "application/json"},
+      body: params,
+    );
 
-      if (res.statusCode == 200) {
-        return res.body;
-      } else {
-        throw Exception('HttpCode: ${res.statusCode}, Body: ${res.body}');
+    if (res.statusCode == 200) {
+      final decodedRes = json.decode(res.body);
+
+      if (!decodedRes.containsKey('access_token')) {
+        throw Exception("Couldn't authroize");
       }
-    } catch (e) {
-      rethrow;
+
+      return decodedRes;
+    } else {
+      throw Exception('HttpCode: ${res.statusCode}, Body: ${res.body}');
     }
   }
 }

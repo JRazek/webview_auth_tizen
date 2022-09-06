@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:webview_auth_tizen/webview_auth_tizen.dart';
+import 'package:webview_auth_tizen/oauth/github.dart';
+import 'package:webview_auth_tizen/oauth/google.dart';
 import 'package:webview_auth_tizen/oauth/auth_data.dart';
 import 'package:webview_auth_tizen/oauth/oauth2.dart';
 import 'package:flutter/material.dart';

@@ -2,6 +2,7 @@
 
 import 'package:webview_auth_tizen/oauth/github.dart';
 import 'package:webview_auth_tizen/oauth/google.dart';
+import 'package:webview_auth_tizen/oauth/facebook.dart';
 import 'package:webview_auth_tizen/oauth/auth_data.dart';
 import 'package:webview_auth_tizen/oauth/oauth2.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ const redirectUri =
 
 const githubClientId = '';
 const githubClientSecret = '';
+
+const facebookClientId = '';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,7 +67,6 @@ class LoginState extends State<MyApp> {
                             onPressed: () {
                               oauthSignIn(GoogleLoginPage(
                                 clientID: googleClientId,
-                                state: 'profile',
                                 scope:
                                     'https://www.googleapis.com/auth/userinfo.email',
                                 redirectUri: redirectUri,
@@ -76,13 +78,21 @@ class LoginState extends State<MyApp> {
                             onPressed: () {
                               oauthSignIn(GithubLoginPage(
                                 clientID: githubClientId,
-                                state: 'profile',
                                 scope: 'user',
                                 redirectUri: redirectUri,
                                 clientSecret: githubClientSecret,
                               ));
                             },
                             child: const Text('Sign in with Github'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              oauthSignIn(FacebookLoginPage(
+                                clientID: facebookClientId,
+                                redirectUri: redirectUri,
+                              ));
+                            },
+                            child: const Text('Sign in with Facebook'),
                           ),
                         ];
 

@@ -1,10 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:webview_auth_tizen/oauth/github.dart';
-import 'package:webview_auth_tizen/oauth/google.dart';
-import 'package:webview_auth_tizen/oauth/facebook.dart';
-import 'package:webview_auth_tizen/oauth/auth_data.dart';
-import 'package:webview_auth_tizen/oauth/oauth2.dart';
+import 'package:webview_auth_tizen/providers/github.dart';
+import 'package:webview_auth_tizen/providers/google.dart';
+import 'package:webview_auth_tizen/providers/facebook.dart';
+import 'package:webview_auth_tizen/auth_data.dart';
+import 'package:webview_auth_tizen/oauth2.dart';
 import 'package:flutter/material.dart';
 
 const googleClientId =

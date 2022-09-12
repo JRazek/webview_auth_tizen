@@ -1,5 +1,5 @@
-import 'package:webview_auth_tizen/oauth/auth_data.dart';
-import 'package:webview_auth_tizen/oauth/oauth2.dart';
+import 'package:webview_auth_tizen/auth_data.dart';
+import 'package:webview_auth_tizen/oauth2.dart';
 
 import 'dart:async';
 
@@ -7,9 +7,11 @@ import 'package:http/http.dart' as http;
 
 import 'dart:convert';
 
+import 'package:webview_auth_tizen/oauth/util.dart';
+
 class GithubLoginPage extends OAuthProviderPage {
   final String clientID;
-  final String state;
+  String state = '';
   final String scope;
 
   static const kAccessTokenPath = '/login/oauth/access_token';
@@ -21,7 +23,6 @@ class GithubLoginPage extends OAuthProviderPage {
 
   GithubLoginPage({
     required this.clientID,
-    required this.state,
     required this.scope,
     required super.redirectUri,
     required this.clientSecret,
@@ -47,9 +48,12 @@ class GithubLoginPage extends OAuthProviderPage {
       throw Exception('github did not return code!');
     }
 
+    state = generateNonce();
+
     final result = await post(kAccessTokenPath, {
       'client_id': clientID,
       'client_secret': clientSecret,
+      'state': state,
       'code': authResult.code!,
       'redirect_uri': redirectUri,
     });

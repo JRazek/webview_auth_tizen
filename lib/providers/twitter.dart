@@ -1,18 +1,15 @@
-import 'package:webview_auth_tizen/oauth/auth_data.dart';
-import 'package:webview_auth_tizen/oauth/oauth2.dart';
+import 'package:webview_auth_tizen/auth_data.dart';
+import 'package:webview_auth_tizen/oauth2.dart';
 
 import 'dart:async';
 
-import 'package:http/http.dart' as http;
-
-import 'dart:convert';
-
-class GoogleLoginPage extends OAuthProviderPage {
+//TODO: (JRazek)
+class TwitterLoginPage extends OAuthProviderPage {
   final String clientID;
   final String state;
   final String scope;
 
-  GoogleLoginPage({
+  TwitterLoginPage({
     required this.clientID,
     required this.state,
     required this.scope,
@@ -51,4 +48,3 @@ class GoogleLoginPage extends OAuthProviderPage {
     };
   }
 }
-

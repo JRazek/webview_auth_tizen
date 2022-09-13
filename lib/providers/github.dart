@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'dart:convert';
 
-import 'package:webview_auth_tizen/oauth/util.dart';
+import 'package:webview_auth_tizen/util.dart';
 
 class GithubLoginPage extends OAuthProviderPage {
   final String clientID;

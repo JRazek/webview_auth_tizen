@@ -3,7 +3,7 @@ import 'package:webview_auth_tizen/oauth2.dart';
 
 import 'dart:async';
 
-import 'package:webview_auth_tizen/oauth/util.dart';
+import 'package:webview_auth_tizen/util.dart';
 
 class FacebookLoginPage extends OAuthProviderPage {
   final String clientID;

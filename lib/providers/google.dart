@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:webview_auth_tizen/auth_data.dart';
 import 'package:webview_auth_tizen/oauth2.dart';
 
@@ -36,6 +38,32 @@ class GoogleLoginPage extends OAuthProviderPage {
     );
 
     return authResult;
+  }
+
+  static Future<AuthResult> signIn(
+    String clientID,
+    String scope,
+    String redirectUri,
+    BuildContext context,
+  ) {
+    final loginPage = GoogleLoginPage(
+      clientID: clientID,
+      scope: scope,
+      redirectUri: redirectUri,
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return loginPage;
+      },
+    );
+
+    final res = loginPage.authResult;
+
+    res.then((value) => Navigator.pop(context));
+
+    return res;
   }
 
   @override

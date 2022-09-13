@@ -64,18 +64,26 @@ class LoginState extends State<MyApp> {
                       builder: (context) {
                         final buttons = [
                           ElevatedButton(
-                            onPressed: () {
-                              oauthSignIn(GoogleLoginPage(
-                                clientID: googleClientId,
-                                scope:
-                                    'https://www.googleapis.com/auth/userinfo.email',
-                                redirectUri: redirectUri,
-                              ));
+                            onPressed: () async {
+                              //static function approach.
+
+                              authData = await GoogleLoginPage.signIn(
+                                googleClientId,
+                                'https://www.googleapis.com/auth/userinfo.email',
+                                redirectUri,
+                                context,
+                              );
+
+                              setState(() {
+                                state = LoginStateE.success;
+                              });
                             },
                             child: const Text('Sign in with Google'),
                           ),
                           ElevatedButton(
                             onPressed: () {
+                              //widget approach
+
                               oauthSignIn(GithubLoginPage(
                                 clientID: githubClientId,
                                 scope: 'user',

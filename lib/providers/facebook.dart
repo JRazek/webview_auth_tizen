@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:webview_auth_tizen/auth_data.dart';
 import 'package:webview_auth_tizen/oauth2.dart';
 
@@ -31,6 +33,30 @@ class FacebookLoginPage extends OAuthProviderPage {
     );
 
     return authResult;
+  }
+
+  static Future<AuthResult> signIn(
+    String clientID,
+    String redirectUri,
+    BuildContext context,
+  ) async {
+    final loginPage = FacebookLoginPage(
+      clientID: clientID,
+      redirectUri: redirectUri,
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return loginPage;
+      },
+    );
+
+    final res = loginPage.authResult;
+
+    res.then((value) => Navigator.pop(context));
+
+    return res;
   }
 
   @override

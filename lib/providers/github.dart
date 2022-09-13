@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:webview_auth_tizen/auth_data.dart';
 import 'package:webview_auth_tizen/oauth2.dart';
 
@@ -61,6 +63,34 @@ class GithubLoginPage extends OAuthProviderPage {
     authResult.accessToken = result['access_token'];
 
     return authResult;
+  }
+
+  static Future<AuthResult> signIn(
+    String clientID,
+    String scope,
+    String redirectUri,
+    String clientSecret,
+    BuildContext context,
+  ) async {
+    final loginPage = GithubLoginPage(
+      clientID: clientID,
+      scope: scope,
+      redirectUri: redirectUri,
+      clientSecret: clientSecret,
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return loginPage;
+      },
+    );
+
+    final res = loginPage.authResult;
+
+    res.then((value) => Navigator.pop(context));
+
+    return res;
   }
 
   static Future post(String path, Map<String, String> params) async {

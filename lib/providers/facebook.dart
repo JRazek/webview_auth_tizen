@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:webview_auth_tizen/auth_data.dart';
 import 'package:webview_auth_tizen/oauth2.dart';
 
@@ -9,7 +8,6 @@ import 'package:webview_auth_tizen/util.dart';
 
 class FacebookLoginPage extends OAuthProviderPage {
   final String clientID;
-  String state = '';
 
   FacebookLoginPage({
     required this.clientID,
@@ -61,7 +59,7 @@ class FacebookLoginPage extends OAuthProviderPage {
 
   @override
   Map<String, String> buildQueryParams() {
-    state = generateNonce();
+    var state = generateNonce();
 
     return {
       'client_id': clientID,

@@ -1,5 +1,5 @@
 name: webview_auth_tizen
-description: A new Flutter plugin project.
+description: Social network authentication plugin using webview for Tizen.
 version: 0.0.1
 homepage:
 
@@ -12,11 +12,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  webview_flutter: ^3.0.4
   ewk_webview_flutter_tizen:
     git:
-      url: https://github.com/bwikbs/plugins.git
-      ref: 50ac06ef0278cdf8ab3d814ab3aee7d0fabe6135
-      path: packages/ewk_webview_flutter
+      url: https://github.com/JRazek/webview_auth_tizen
+      ref: ewk_webview_flutter
   http: ^0.13.5
 
 dev_dependencies:

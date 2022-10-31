@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.example.webview_auth_tizen_example" version="1.0.0" api-version="5.5" xmlns="http://tizen.org/ns/packages">
+<manifest package="com.example.webview_auth_tizen_example" version="1.0.0" api-version="6.0" xmlns="http://tizen.org/ns/packages">
     <profile name="tv"/>
     <ui-application appid="com.example.webview_auth_tizen_example" exec="Runner.dll" type="dotnet" multiple="false" nodisplay="false" taskmanage="true" api-version="4">
         <label>webview_auth_tizen_example</label>
@@ -9,5 +9,8 @@
     <tv-info api-version="8.8.0">
         <infolink>T-INFOLINK2021-1000</infolink>
     </tv-info>
+    <privileges>
+        <privilege>http://tizen.org/privilege/internet</privilege>
+    </privileges>
     <feature name="http://tizen.org/feature/screen.size.all"/>
 </manifest>

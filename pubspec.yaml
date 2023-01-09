@@ -13,10 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   webview_flutter: ^3.0.4
-  ewk_webview_flutter_tizen:
-    git:
-      url: https://github.com/JRazek/webview_auth_tizen
-      ref: ewk_webview_flutter
+  webview_flutter_tizen: ^0.6.2
   http: ^0.13.5
 
 dev_dependencies:
